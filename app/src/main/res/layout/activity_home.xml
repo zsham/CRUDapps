@@ -9,10 +9,10 @@
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome"
+        android:layout_marginBottom="8dp"
+        android:text="WELCOME to PABLO Apps"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvUserInfo"
@@ -31,7 +31,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="#FFEEEE"/>
 
     <Button
         android:id="@+id/btnLogout"

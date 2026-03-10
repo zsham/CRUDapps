@@ -58,7 +58,7 @@ class HomeActivity : AppCompatActivity() {
             return
         }
 
-        val url = "http://10.0.2.2/app_testing/get_notes.php?user_id=$userId"
+        val url = "http://10.0.2.2:8000/get_notes.php?user_id=$userId"
         Log.d("HomeActivity", "Fetching from: $url")
 
         val request = StringRequest(
@@ -112,7 +112,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun deleteNote(id: String) {
-        val url = "http://10.0.2.2/app_testing/delete_note.php"
+        val url = "http://10.0.2.2:8000/delete_note.php"
         val request = object : StringRequest(Request.Method.POST, url,
             { response ->
                 if (response.trim().contains("success")) {
