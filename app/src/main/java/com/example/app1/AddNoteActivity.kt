@@ -17,6 +17,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
     private lateinit var btnSave: Button
+    private var noteId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,14 @@ class AddNoteActivity : AppCompatActivity() {
         etDescription = findViewById(R.id.description)
         btnSave = findViewById(R.id.saveBtn)
 
+        // Check if we are updating an existing note
+        noteId = intent.getStringExtra("id")
+        if (noteId != null) {
+            etTitle.setText(intent.getStringExtra("title"))
+            etDescription.setText(intent.getStringExtra("description"))
+            btnSave.text = "Update Note"
+        }
+
         btnSave.setOnClickListener {
             val title = etTitle.text.toString().trim()
             val description = etDescription.text.toString().trim()
@@ -33,7 +42,11 @@ class AddNoteActivity : AppCompatActivity() {
             if (title.isEmpty() || description.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
-                addNote(title, description)
+                if (noteId == null) {
+                    addNote(title, description)
+                } else {
+                    updateNote(noteId!!, title, description)
+                }
             }
         }
     }
@@ -47,14 +60,11 @@ class AddNoteActivity : AppCompatActivity() {
             return
         }
 
-        // Updated URL: removed :8000 and added /app_testing/ to match Login/Register
         val url = "http://10.0.2.2:8000/add_note.php"
-        Log.d("AddNote", "Saving note to: $url")
-
+        
         val request = object : StringRequest(
             Request.Method.POST, url,
             { response ->
-                Log.d("AddNoteResponse", response)
                 if (response.trim().contains("success")) {
                     Toast.makeText(this, "Note added successfully", Toast.LENGTH_SHORT).show()
                     finish()
@@ -63,14 +73,7 @@ class AddNoteActivity : AppCompatActivity() {
                 }
             },
             { error ->
-                val statusCode = error.networkResponse?.statusCode ?: 0
-                val message = when (error) {
-                    is TimeoutError -> "Connection Timeout"
-                    is NoConnectionError -> "Cannot connect to server (Check XAMPP)"
-                    else -> "Error $statusCode: ${error.message ?: "Unknown Error"}"
-                }
-                Log.e("AddNoteError", "Status: $statusCode, Message: ${error.message}")
-                Toast.makeText(this, "Error: $message", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         ) {
             override fun getParams(): MutableMap<String, String> {
@@ -81,7 +84,34 @@ class AddNoteActivity : AppCompatActivity() {
                 return params
             }
         }
+        Volley.newRequestQueue(this).add(request)
+    }
 
+    private fun updateNote(id: String, title: String, description: String) {
+        val url = "http://10.0.2.2:8000/update_note.php"
+
+        val request = object : StringRequest(
+            Request.Method.POST, url,
+            { response ->
+                if (response.trim().contains("success")) {
+                    Toast.makeText(this, "Note updated successfully", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Update failed: $response", Toast.LENGTH_SHORT).show()
+                }
+            },
+            { error ->
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        ) {
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["id"] = id
+                params["title"] = title
+                params["description"] = description
+                return params
+            }
+        }
         Volley.newRequestQueue(this).add(request)
     }
 }

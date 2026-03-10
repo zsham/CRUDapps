@@ -23,6 +23,30 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="right"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                style="@style/Widget.AppCompat.Button.Small"/>
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_marginLeft="8dp"
+                style="@style/Widget.AppCompat.Button.Small"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
